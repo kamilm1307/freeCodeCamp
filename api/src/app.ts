@@ -47,9 +47,14 @@ import {
   EMAIL_PROVIDER,
   FCC_ENABLE_DEV_LOGIN_MODE,
   FCC_ENABLE_SWAGGER_UI,
+  FREECODECAMP_NODE_ENV,
   SENTRY_DSN
 } from './utils/env';
 import { isObjectID } from './utils/validation';
+import {
+  examEnvironmentOpenRoutes,
+  examEnvironmentValidatedTokenRoutes
+} from './exam-environment/routes/exam-environment';
 
 export type FastifyInstanceWithTypeProvider = FastifyInstance<
   RawServerDefault,
@@ -181,7 +186,7 @@ export const build = async (
     fastify.log.info(`Swagger UI available at ${API_LOCATION}/documentation`);
   }
 
-  // redirectWithMessage must be registered before codeFlowAuth
+  // redirectWithMessage must be registered before auth
   void fastify.register(redirectWithMessage);
   void fastify.register(auth);
   void fastify.register(notFound);
@@ -235,6 +240,18 @@ export const build = async (
       await fastify.register(authRoutes);
     }
   });
+
+  // NOTE: Code behind the `FREECODECAMP_NODE_ENV` var is not ready to be deployed yet.
+  if (FREECODECAMP_NODE_ENV !== 'production') {
+    void fastify.register(function (fastify, _opts, done) {
+      fastify.addHook('onRequest', fastify.authorizeExamEnvironmentToken);
+
+      void fastify.register(examEnvironmentValidatedTokenRoutes);
+      done();
+    });
+    void fastify.register(examEnvironmentOpenRoutes);
+  }
+
   void fastify.register(chargeStripeRoute);
   void fastify.register(signoutRoute);
   void fastify.register(emailSubscribtionRoutes);
