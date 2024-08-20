@@ -1939,7 +1939,10 @@
       "ubpx": { "title": "193", "intro": [] },
       "lbyi": { "title": "194", "intro": [] },
       "ctwj": { "title": "195", "intro": [] },
-      "fmbk": { "title": "196", "intro": [] },
+      "lab-real-time-counter": {
+        "title": "Build a Real Time Counter",
+        "intro": ["In this lab, you will build a real-time character counter"]
+      },
       "nlbo": { "title": "197", "intro": [] },
       "bbyq": { "title": "198", "intro": [] },
       "uglc": { "title": "199", "intro": [] },
